@@ -1,0 +1,29 @@
+#PromQL for iostat output
+
+Disk IOps per node (read + write):
+  promql: sum by (exported_instance) (rate(node_disk_reads_completed_total{device='sdb'}[$__rate_interval])) + sum by (exported_instance) (rate(node_disk_writes_completed_total{device='sdb'}[$__rate_interval]))
+  units:  Number of ops
+  
+Disk Bandwidth per node (read + write):
+  promql: (sum by (exported_instance) (rate(node_disk_read_bytes_total{device='sdb'}[$__rate_interval])) + sum by (exported_instance) (rate(node_disk_written_bytes_total{device='sdb'}[$__rate_interval]))) / 1048576
+  units:  in KB
+  
+Average Read Latency:
+  promql: sum by (exported_instance) (rate(node_disk_read_time_seconds_total{device='sdb'}[$__rate_interval])) / sum by (exported_instance) (rate(node_disk_reads_completed_total{device='sdb'}[$__rate_interval])) * 1000
+  units:  in millisecond
+  
+ Average Write Latency:
+  promql: sum by (exported_instance) (rate(node_disk_write_time_seconds_total{device='sdb'}[$__rate_interval])) / sum by (exported_instance) (rate(node_disk_writes_completed_total{device='sdb'}[$__rate_interval])) * 1000
+  units: in millisecond
+  
+ Average Read Request Size:
+  promql: (sum by (exported_instance) (rate(node_disk_read_bytes_total{device='sdb'}[$__rate_interval])) / sum by (exported_instance) (rate(node_disk_reads_completed_total{device='sdb'}[$__rate_interval])))/ 1024
+  units:  in KB
+  
+ Average Write Request Size:
+  promql:  (sum by (exported_instance) (rate(node_disk_written_bytes_total{device='sdb'}[$__rate_interval])) / sum by (exported_instance) (rate(node_disk_writes_completed_total{device='sdb'}[$__rate_interval]))) / 1024
+  units:   in KB
+  
+ Average Queue Size:
+  promql:  sum by (exported_instance) (rate(node_disk_io_time_weighted_seconds_total[$__rate_interval])) 
+  units:   dimensionless
